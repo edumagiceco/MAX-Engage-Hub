@@ -21,6 +21,7 @@
 - [07-development-plan.md](/Users/magic/work/MAX-Engage-Hub/docs/07-development-plan.md): 문서 기반 실행 계획, 단계별 일정, 리스크, 검증 기준
 - [08-php-mysql-detailed-architecture.md](/Users/magic/work/MAX-Engage-Hub/docs/08-php-mysql-detailed-architecture.md): PHP + MySQL 기반 상세 아키텍처 설계
 - [09-dothome-free-hosting-profile.md](/Users/magic/work/MAX-Engage-Hub/docs/09-dothome-free-hosting-profile.md): 닷홈 무료호스팅 제약에 맞춘 축소 배포 프로파일
+- [10-user-manual.md](/Users/magic/work/MAX-Engage-Hub/docs/10-user-manual.md): 현재 구현 기준 설치, 운영, 상담 준비 흐름을 설명하는 상세 사용 매뉴얼
 
 ## 참고 맥락
 
