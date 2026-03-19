@@ -1,0 +1,146 @@
+@extends('layouts.app')
+
+@section('title', $customer->name.' | MAX Engage Hub')
+
+@section('content')
+    <section class="section-header">
+        <div>
+            <p class="eyebrow">Customer Detail</p>
+            <h1>{{ $customer->name }}</h1>
+            <p class="muted">{{ $customer->email }} @if($customer->company_name) · {{ $customer->company_name }} @endif</p>
+        </div>
+    </section>
+
+    <section class="detail-grid">
+        <div class="stack">
+            <div class="panel">
+                <div class="table-head">
+                    <h2>기본 정보</h2>
+                    <span class="badge">{{ $customer->status }}</span>
+                </div>
+
+                <dl class="meta-list">
+                    <div><dt>연락처</dt><dd>{{ $customer->phone ?: '-' }}</dd></div>
+                    <div><dt>직책</dt><dd>{{ $customer->job_title ?: '-' }}</dd></div>
+                    <div><dt>최근 유입</dt><dd>{{ $customer->latest_source ?: '-' }}</dd></div>
+                    <div><dt>마케팅 동의</dt><dd>{{ $customer->consent_marketing ? '동의' : '미동의' }}</dd></div>
+                </dl>
+            </div>
+
+            <div class="panel">
+                <h2>상태 변경</h2>
+
+                <form method="POST" action="{{ route('admin.customers.update', $customer) }}" class="inline-form">
+                    @csrf
+                    @method('PATCH')
+
+                    <select name="status">
+                        @foreach ($statusOptions as $statusOption)
+                            <option value="{{ $statusOption }}" @selected($customer->status === $statusOption)>
+                                {{ $statusOption }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="button primary small">업데이트</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>운영 메모 추가</h2>
+
+                <form method="POST" action="{{ route('admin.customers.notes.store', $customer) }}" class="stack">
+                    @csrf
+                    <textarea name="note" rows="5" placeholder="상담 준비 메모, 다음 연락 포인트 등을 남겨주세요.">{{ old('note') }}</textarea>
+                    <button type="submit" class="button primary small">메모 저장</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>후속 액션 등록</h2>
+
+                <form method="POST" action="{{ route('admin.customers.tasks.store', $customer) }}" class="stack">
+                    @csrf
+
+                    <label>
+                        <span>액션 제목</span>
+                        <input type="text" name="title" value="{{ old('title') }}" required>
+                    </label>
+
+                    <label>
+                        <span>예정일</span>
+                        <input type="date" name="due_date" value="{{ old('due_date') }}">
+                    </label>
+
+                    <label>
+                        <span>메모</span>
+                        <textarea name="note" rows="4">{{ old('note') }}</textarea>
+                    </label>
+
+                    <button type="submit" class="button primary small">후속 액션 저장</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="stack">
+            <div class="panel">
+                <h2>활동 타임라인</h2>
+
+                <ul class="timeline">
+                    @forelse ($customer->activities as $activity)
+                        <li>
+                            <div>
+                                <strong>{{ $activity->title }}</strong>
+                                <p>{{ $activity->activity_type }} · {{ $activity->source }}</p>
+                            </div>
+                            <time>{{ $activity->created_at->format('Y-m-d H:i') }}</time>
+                        </li>
+                    @empty
+                        <li class="empty">저장된 활동 이력이 없습니다.</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h2>운영 메모</h2>
+
+                <ul class="timeline">
+                    @forelse ($customer->notes as $note)
+                        <li>
+                            <div>
+                                <strong>{{ $note->user?->name ?: 'System' }}</strong>
+                                <p>{{ $note->note }}</p>
+                            </div>
+                            <time>{{ $note->created_at->format('Y-m-d H:i') }}</time>
+                        </li>
+                    @empty
+                        <li class="empty">운영 메모가 없습니다.</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h2>후속 액션</h2>
+
+                <ul class="timeline">
+                    @forelse ($customer->followUpTasks as $task)
+                        <li>
+                            <div>
+                                <strong>{{ $task->title }}</strong>
+                                <p>{{ $task->note ?: '메모 없음' }}</p>
+                            </div>
+                            <time>
+                                {{ $task->status }}
+                                @if ($task->due_date)
+                                    · {{ $task->due_date->format('Y-m-d') }}
+                                @endif
+                            </time>
+                        </li>
+                    @empty
+                        <li class="empty">등록된 후속 액션이 없습니다.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+    </section>
+@endsection
