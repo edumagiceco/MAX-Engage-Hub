@@ -10,10 +10,19 @@ class InboxController extends Controller
 {
     public function index(): View
     {
+        $statusPriority = implode(' ', [
+            "CASE status",
+            "WHEN 'new' THEN 0",
+            "WHEN 'in_review' THEN 1",
+            "WHEN 'contacted' THEN 2",
+            "WHEN 'nurturing' THEN 3",
+            'ELSE 99 END',
+        ]);
+
         $customers = Customer::query()
             ->with('latestActivity')
             ->whereIn('status', ['new', 'in_review', 'contacted', 'nurturing'])
-            ->orderByRaw("FIELD(status, 'new', 'in_review', 'contacted', 'nurturing')")
+            ->orderByRaw($statusPriority)
             ->latest('updated_at')
             ->paginate(12);
 

@@ -397,6 +397,7 @@ textarea {
 .timeline li {
     display: flex;
     justify-content: space-between;
+    align-items: start;
     gap: 16px;
     padding-bottom: 14px;
     border-bottom: 1px solid var(--line);
@@ -411,6 +412,50 @@ textarea {
     color: var(--muted);
     font-size: 0.9rem;
     text-align: right;
+}
+
+.timeline-body {
+    flex: 1;
+    display: grid;
+    gap: 12px;
+}
+
+.activity-summary {
+    margin-top: 6px;
+}
+
+.activity-detail-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+}
+
+.activity-detail-list div {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.activity-detail-list-panel {
+    margin-top: 14px;
+}
+
+.activity-detail-list dt {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.activity-detail-list dd {
+    margin: 8px 0 0;
+    line-height: 1.55;
+}
+
+.pre-wrap {
+    white-space: pre-wrap;
 }
 
 .summary-grid {

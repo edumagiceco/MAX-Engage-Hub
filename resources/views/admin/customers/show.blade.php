@@ -3,6 +3,10 @@
 @section('title', $customer->name.' | MAX Engage Hub')
 
 @section('content')
+    @php
+        $latestSubmission = $customer->activities->first(fn ($activity) => $activity->isSubmissionActivity());
+    @endphp
+
     <section class="section-header">
         <div>
             <p class="eyebrow">Customer Detail</p>
@@ -24,7 +28,33 @@
                     <div><dt>직책</dt><dd>{{ $customer->job_title ?: '-' }}</dd></div>
                     <div><dt>최근 유입</dt><dd>{{ $customer->latest_source ?: '-' }}</dd></div>
                     <div><dt>마케팅 동의</dt><dd>{{ $customer->consent_marketing ? '동의' : '미동의' }}</dd></div>
+                    <div><dt>생성일</dt><dd>{{ $customer->created_at->format('Y-m-d H:i') }}</dd></div>
+                    <div><dt>최근 수정</dt><dd>{{ $customer->updated_at->format('Y-m-d H:i') }}</dd></div>
                 </dl>
+            </div>
+
+            <div class="panel">
+                <div class="table-head">
+                    <h2>최근 입력 정보</h2>
+                    @if ($latestSubmission)
+                        <span class="badge">{{ $latestSubmission->formLabel() ?: '제출 기록' }}</span>
+                    @endif
+                </div>
+
+                @if ($latestSubmission)
+                    <p class="muted">운영자가 바로 확인해야 하는 최신 제출 원문입니다.</p>
+
+                    <dl class="activity-detail-list activity-detail-list-panel">
+                        @foreach ($latestSubmission->detailItems() as $item)
+                            <div>
+                                <dt>{{ $item['label'] }}</dt>
+                                <dd @class(['pre-wrap' => $item['multiline']])>{{ $item['value'] }}</dd>
+                            </div>
+                        @endforeach
+                    </dl>
+                @else
+                    <p class="muted">아직 폼 제출 원문이 저장된 활동이 없습니다.</p>
+                @endif
             </div>
 
             <div class="panel">
@@ -146,10 +176,27 @@
 
                 <ul class="timeline">
                     @forelse ($customer->activities as $activity)
+                        @php($detailItems = $activity->detailItems())
                         <li>
-                            <div>
-                                <strong>{{ $activity->title }}</strong>
-                                <p>{{ $activity->activity_type }} · {{ $activity->source }}</p>
+                            <div class="timeline-body">
+                                <div>
+                                    <strong>{{ $activity->title }}</strong>
+                                    <p>{{ $activity->activity_type }} · {{ $activity->source }}</p>
+                                    @if ($activity->summaryLine())
+                                        <p class="activity-summary">{{ $activity->summaryLine() }}</p>
+                                    @endif
+                                </div>
+
+                                @if ($detailItems !== [])
+                                    <dl class="activity-detail-list">
+                                        @foreach ($detailItems as $item)
+                                            <div>
+                                                <dt>{{ $item['label'] }}</dt>
+                                                <dd @class(['pre-wrap' => $item['multiline']])>{{ $item['value'] }}</dd>
+                                            </div>
+                                        @endforeach
+                                    </dl>
+                                @endif
                             </div>
                             <time>{{ $activity->created_at->format('Y-m-d H:i') }}</time>
                         </li>

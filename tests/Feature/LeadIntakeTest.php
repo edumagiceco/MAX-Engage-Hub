@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Customer;
+use App\Models\LeadActivity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -36,6 +37,13 @@ class LeadIntakeTest extends TestCase
             'customer_id' => $customer->id,
             'activity_type' => 'contact_submitted',
         ]);
+
+        $activity = LeadActivity::query()->where('customer_id', $customer->id)->latest()->firstOrFail();
+
+        $this->assertSame('kim@example.com', $activity->payload_json['submitted_email']);
+        $this->assertSame('Kim Demo', $activity->payload_json['submitted_name']);
+        $this->assertTrue($activity->payload_json['consent_marketing']);
+        $this->assertSame('첫 문의입니다.', $activity->payload_json['message']);
     }
 
     public function test_second_submission_merges_into_existing_customer(): void

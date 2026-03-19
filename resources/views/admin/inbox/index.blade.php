@@ -57,6 +57,9 @@
                         <td>
                             {{ $customer->latestActivity?->title ?: '-' }}
                             <small>{{ optional($customer->latestActivity?->created_at)->format('Y-m-d H:i') }}</small>
+                            @if ($customer->latestActivity?->summaryLine())
+                                <small>{{ $customer->latestActivity->summaryLine() }}</small>
+                            @endif
                         </td>
                         <td>{{ $customer->latest_source ?: '-' }}</td>
                     </tr>

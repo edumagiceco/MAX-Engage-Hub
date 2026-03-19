@@ -51,7 +51,12 @@
                         </td>
                         <td>{{ $customer->company_name ?: '-' }}</td>
                         <td><span class="badge">{{ $customer->status }}</span></td>
-                        <td>{{ $customer->latestActivity?->title ?: '-' }}</td>
+                        <td>
+                            {{ $customer->latestActivity?->title ?: '-' }}
+                            @if ($customer->latestActivity?->summaryLine())
+                                <small>{{ $customer->latestActivity->summaryLine() }}</small>
+                            @endif
+                        </td>
                         <td>{{ $customer->created_at->format('Y-m-d') }}</td>
                     </tr>
                 @empty
