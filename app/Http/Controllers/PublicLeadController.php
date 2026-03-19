@@ -57,6 +57,7 @@ class PublicLeadController extends Controller
                 'description' => '관심 주제와 현재 상황을 함께 남기면 운영 인박스와 고객 상세에 즉시 반영됩니다.',
                 'helper' => '소개받고 싶은 서비스, 현재 고민, 원하는 미팅 방식 등을 적어주세요.',
                 'route' => 'forms.contact',
+                'show_assessment_fields' => false,
             ],
             'education' => [
                 'key' => 'education',
@@ -65,6 +66,7 @@ class PublicLeadController extends Controller
                 'description' => '회사, 대상자, 교육 목적을 남기면 교육 제안과 후속 운영에 바로 연결됩니다.',
                 'helper' => '희망 주제, 예상 대상자 수, 진행 시기 등을 적어주세요.',
                 'route' => 'forms.education',
+                'show_assessment_fields' => false,
             ],
             'diagnosis' => [
                 'key' => 'diagnosis',
@@ -73,6 +75,7 @@ class PublicLeadController extends Controller
                 'description' => '현재 단계와 병목을 남기면 이후 상담과 추천 설계에 재사용할 수 있습니다.',
                 'helper' => '현재 AX 도입 수준, 우선 해결 과제, 관련 팀 규모 등을 적어주세요.',
                 'route' => 'forms.diagnosis',
+                'show_assessment_fields' => true,
             ],
             'recommendation' => [
                 'key' => 'recommendation',
@@ -81,6 +84,7 @@ class PublicLeadController extends Controller
                 'description' => '관심 영역과 현업 문제를 남기면 추천 요청 이력과 고객 상태가 함께 저장됩니다.',
                 'helper' => '관심 솔루션, 도입 목적, 원하는 결과를 적어주세요.',
                 'route' => 'forms.recommendation',
+                'show_assessment_fields' => true,
             ],
         ];
     }

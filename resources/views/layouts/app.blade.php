@@ -23,6 +23,7 @@
                     @auth
                         <a href="{{ route('admin.inbox') }}">Inbox</a>
                         <a href="{{ route('admin.customers.index') }}">Customers</a>
+                        <a href="{{ route('admin.cases.index') }}">Cases</a>
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

@@ -8,18 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('customer_tags', function (Blueprint $table) {
+        Schema::create('diagnosis_results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->string('tag', 80)->index();
+            $table->unsignedTinyInteger('overall_score')->index();
+            $table->string('maturity_level', 30)->index();
+            $table->text('main_pain_points')->nullable();
+            $table->text('summary');
             $table->timestamps();
 
-            $table->unique(['customer_id', 'tag']);
+            $table->index(['customer_id', 'created_at']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('customer_tags');
+        Schema::dropIfExists('diagnosis_results');
     }
 };

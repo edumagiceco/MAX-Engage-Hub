@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class LeadIntakeService
 {
+    public function __construct(
+        private readonly DiagnosisRecommendationService $diagnosisRecommendationService,
+    ) {
+    }
+
     public function store(string $form, array $attributes): Customer
     {
         $config = $this->formConfig($form);
@@ -59,7 +64,9 @@ class LeadIntakeService
                 ]),
             ]);
 
-            return $customer->fresh(['latestActivity']);
+            $this->diagnosisRecommendationService->process($form, $customer, $attributes);
+
+            return $customer->fresh(['latestActivity', 'latestDiagnosisResult', 'latestRecommendationResult', 'tags']);
         });
     }
 

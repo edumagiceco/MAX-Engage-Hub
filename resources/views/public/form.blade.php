@@ -43,18 +43,30 @@
 
                     <label>
                         <span>관심 영역</span>
-                        <input type="text" name="interest_area" value="{{ old('interest_area') }}">
+                        <select name="interest_area">
+                            <option value="">선택</option>
+                            @foreach (['education' => '교육', 'consulting' => '컨설팅', 'rag' => 'RAG', 'ocr' => 'OCR', 'workflow_automation' => '업무 자동화'] as $value => $label)
+                                <option value="{{ $value }}" @selected(old('interest_area') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
                     </label>
 
-                    <label>
-                        <span>현재 단계</span>
-                        <input type="text" name="current_stage" value="{{ old('current_stage') }}">
-                    </label>
+                    @if ($form['show_assessment_fields'])
+                        <label>
+                            <span>현재 단계</span>
+                            <select name="current_stage">
+                                <option value="">선택</option>
+                                @foreach (['exploring' => '검토 중', 'pilot' => '파일럿', 'rollout' => '부서 확산', 'companywide' => '전사 확산'] as $value => $label)
+                                    <option value="{{ $value }}" @selected(old('current_stage') === $value)>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </label>
 
-                    <label>
-                        <span>관련 팀 규모</span>
-                        <input type="text" name="team_size" value="{{ old('team_size') }}">
-                    </label>
+                        <label>
+                            <span>관련 팀 규모</span>
+                            <input type="text" name="team_size" value="{{ old('team_size') }}" placeholder="예: 5명, 20명">
+                        </label>
+                    @endif
                 </div>
 
                 <label>

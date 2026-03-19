@@ -55,6 +55,26 @@ class Customer extends Model
         return $this->hasMany(CustomerTag::class);
     }
 
+    public function diagnosisResults(): HasMany
+    {
+        return $this->hasMany(DiagnosisResult::class)->latest();
+    }
+
+    public function latestDiagnosisResult(): HasOne
+    {
+        return $this->hasOne(DiagnosisResult::class)->latestOfMany();
+    }
+
+    public function recommendationResults(): HasMany
+    {
+        return $this->hasMany(RecommendationResult::class)->latest();
+    }
+
+    public function latestRecommendationResult(): HasOne
+    {
+        return $this->hasOne(RecommendationResult::class)->latestOfMany();
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany(CustomerNote::class)->latest();

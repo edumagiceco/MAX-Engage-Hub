@@ -28,6 +28,64 @@
             </div>
 
             <div class="panel">
+                <div class="table-head">
+                    <h2>진단 및 추천 요약</h2>
+                    <a class="button secondary small" href="{{ route('admin.cases.index') }}">사례 검색</a>
+                </div>
+
+                <div class="summary-grid">
+                    <article class="insight-card">
+                        <span class="card-tag">Diagnosis</span>
+                        @if ($customer->latestDiagnosisResult)
+                            <strong>{{ $customer->latestDiagnosisResult->overall_score }}점 · {{ $customer->latestDiagnosisResult->maturity_level }}</strong>
+                            <p>{{ $customer->latestDiagnosisResult->summary }}</p>
+                            <small>{{ $customer->latestDiagnosisResult->main_pain_points ?: '주요 pain point 미입력' }}</small>
+                        @else
+                            <strong>아직 진단 결과가 없습니다.</strong>
+                            <p>AX 진단 요청이 들어오면 성숙도와 요약이 여기에 저장됩니다.</p>
+                        @endif
+                    </article>
+
+                    <article class="insight-card">
+                        <span class="card-tag">Recommendation</span>
+                        @if ($customer->latestRecommendationResult)
+                            <strong>{{ $customer->latestRecommendationResult->recommendation_type }}</strong>
+                            <p>{{ $customer->latestRecommendationResult->recommendation_reason }}</p>
+                            <small>{{ $customer->latestRecommendationResult->next_action }}</small>
+                        @else
+                            <strong>아직 추천 결과가 없습니다.</strong>
+                            <p>맞춤 추천 요청이나 진단 이후 생성된 1차 제안이 표시됩니다.</p>
+                        @endif
+                    </article>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>고객 태그</h2>
+
+                <div class="chip-row">
+                    @forelse ($customer->tags as $tag)
+                        <form method="POST" action="{{ route('admin.customers.tags.destroy', [$customer, $tag]) }}" class="chip-form">
+                            @csrf
+                            @method('DELETE')
+                            <span class="tag-chip">
+                                {{ $tag->tag }}
+                                <button type="submit" class="tag-delete" aria-label="태그 삭제">×</button>
+                            </span>
+                        </form>
+                    @empty
+                        <p class="muted">아직 연결된 태그가 없습니다.</p>
+                    @endforelse
+                </div>
+
+                <form method="POST" action="{{ route('admin.customers.tags.store', $customer) }}" class="inline-form top-gap">
+                    @csrf
+                    <input type="text" name="tag" value="{{ old('tag') }}" placeholder="예: high_intent">
+                    <button type="submit" class="button primary small">태그 추가</button>
+                </form>
+            </div>
+
+            <div class="panel">
                 <h2>상태 변경</h2>
 
                 <form method="POST" action="{{ route('admin.customers.update', $customer) }}" class="inline-form">
@@ -138,6 +196,30 @@
                         </li>
                     @empty
                         <li class="empty">등록된 후속 액션이 없습니다.</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="panel">
+                <div class="table-head">
+                    <h2>관련 사례</h2>
+                    <a class="button secondary small" href="{{ route('admin.cases.index', ['solution_type' => $customer->latestRecommendationResult?->recommendation_type]) }}">더 보기</a>
+                </div>
+
+                <ul class="case-list">
+                    @forelse ($relatedCases as $case)
+                        <li>
+                            <div>
+                                <strong>{{ $case->title }}</strong>
+                                <p>{{ $case->problem }}</p>
+                                <small>{{ $case->industry ?: '산업 미지정' }} · {{ $case->department ?: '부서 미지정' }}</small>
+                            </div>
+                            <div class="case-meta">
+                                <span class="badge">{{ $case->solution_type }}</span>
+                            </div>
+                        </li>
+                    @empty
+                        <li class="empty">추천 타입과 연결된 사례가 아직 없습니다.</li>
                     @endforelse
                 </ul>
             </div>

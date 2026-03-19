@@ -359,6 +359,11 @@ textarea {
     align-items: start;
 }
 
+.split-wide {
+    grid-template-columns: 0.95fr 1.05fr;
+    align-items: start;
+}
+
 .meta-list {
     display: grid;
     gap: 12px;
@@ -406,6 +411,106 @@ textarea {
     color: var(--muted);
     font-size: 0.9rem;
     text-align: right;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.insight-card {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid var(--line);
+}
+
+.insight-card strong,
+.case-list strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip-form {
+    display: inline-flex;
+}
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(217, 118, 61, 0.12);
+    color: #995326;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.tag-delete {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.top-gap {
+    margin-top: 16px;
+}
+
+.case-list {
+    display: grid;
+    gap: 14px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.case-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+
+.case-list p,
+.case-list small {
+    margin: 0;
+}
+
+.case-meta {
+    display: grid;
+    gap: 8px;
+    justify-items: end;
+    text-align: right;
+}
+
+.metrics-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.metric-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 94, 87, 0.08);
+    color: var(--brand);
+    font-size: 0.84rem;
+    font-weight: 600;
 }
 
 .flash {
@@ -464,9 +569,11 @@ textarea {
     .split,
     .auth-wrap,
     .detail-grid,
+    .split-wide,
     .card-grid,
     .stats,
-    .field-grid {
+    .field-grid,
+    .summary-grid {
         grid-template-columns: 1fr;
     }
 
@@ -481,6 +588,15 @@ textarea {
     }
 
     .timeline time {
+        text-align: left;
+    }
+
+    .case-list li {
+        display: grid;
+    }
+
+    .case-meta {
+        justify-items: start;
         text-align: left;
     }
 }

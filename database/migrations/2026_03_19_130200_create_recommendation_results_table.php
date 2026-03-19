@@ -8,18 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('customer_tags', function (Blueprint $table) {
+        Schema::create('recommendation_results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->string('tag', 80)->index();
+            $table->string('recommendation_type', 50)->index();
+            $table->text('recommendation_reason');
+            $table->text('next_action');
             $table->timestamps();
 
-            $table->unique(['customer_id', 'tag']);
+            $table->index(['customer_id', 'created_at']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('customer_tags');
+        Schema::dropIfExists('recommendation_results');
     }
 };

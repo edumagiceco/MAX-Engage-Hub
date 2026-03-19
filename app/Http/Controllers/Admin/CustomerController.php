@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCustomerTagRequest;
 use App\Http\Requests\StoreCustomerNoteRequest;
 use App\Http\Requests\StoreFollowUpTaskRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Models\CaseLibrary;
 use App\Models\Customer;
+use App\Models\CustomerTag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,11 +49,22 @@ class CustomerController extends Controller
             'activities' => fn ($query) => $query->latest(),
             'notes.user',
             'followUpTasks.user',
+            'tags',
+            'latestDiagnosisResult',
+            'latestRecommendationResult',
         ]);
+
+        $recommendationType = $customer->latestRecommendationResult?->recommendation_type;
+        $relatedCasesQuery = CaseLibrary::query()->approved()->latest();
+
+        if ($recommendationType) {
+            $relatedCasesQuery->where('solution_type', $recommendationType);
+        }
 
         return view('admin.customers.show', [
             'customer' => $customer,
             'statusOptions' => Customer::STATUS_OPTIONS,
+            'relatedCases' => $relatedCasesQuery->limit(5)->get(),
         ]);
     }
 
@@ -106,5 +120,40 @@ class CustomerController extends Controller
         ]);
 
         return back()->with('status', '후속 액션을 등록했습니다.');
+    }
+
+    public function storeTag(StoreCustomerTagRequest $request, Customer $customer): RedirectResponse
+    {
+        $tag = trim($request->validated('tag'));
+
+        $customer->tags()->firstOrCreate([
+            'tag' => $tag,
+        ]);
+
+        $customer->activities()->create([
+            'activity_type' => 'tag_added',
+            'source' => 'admin_console',
+            'title' => '고객 태그가 추가되었습니다.',
+            'payload_json' => ['tag' => $tag],
+        ]);
+
+        return back()->with('status', '고객 태그를 추가했습니다.');
+    }
+
+    public function destroyTag(Customer $customer, CustomerTag $tag): RedirectResponse
+    {
+        abort_unless($tag->customer_id === $customer->id, 404);
+
+        $deletedTag = $tag->tag;
+        $tag->delete();
+
+        $customer->activities()->create([
+            'activity_type' => 'tag_removed',
+            'source' => 'admin_console',
+            'title' => '고객 태그가 제거되었습니다.',
+            'payload_json' => ['tag' => $deletedTag],
+        ]);
+
+        return back()->with('status', '고객 태그를 제거했습니다.');
     }
 }

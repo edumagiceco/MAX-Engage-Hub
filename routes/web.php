@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\InboxController;
+use App\Http\Controllers\Admin\CaseLibraryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PublicLeadController;
 use Illuminate\Support\Facades\Route;
@@ -39,4 +40,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
     Route::patch('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::post('/customers/{customer}/notes', [CustomerController::class, 'storeNote'])->name('customers.notes.store');
     Route::post('/customers/{customer}/tasks', [CustomerController::class, 'storeTask'])->name('customers.tasks.store');
+    Route::post('/customers/{customer}/tags', [CustomerController::class, 'storeTag'])->name('customers.tags.store');
+    Route::delete('/customers/{customer}/tags/{tag}', [CustomerController::class, 'destroyTag'])->name('customers.tags.destroy');
+
+    Route::get('/cases', [CaseLibraryController::class, 'index'])->name('cases.index');
+    Route::post('/cases', [CaseLibraryController::class, 'store'])->name('cases.store');
 });
